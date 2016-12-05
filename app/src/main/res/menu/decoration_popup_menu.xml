@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/portraits"
+        android:title="Quadros"/>
+
+    <item
+        android:id="@+id/vases"
+        android:title="Vasos"/>
+
+    <item
+        android:id="@+id/mats"
+        android:title="Tapetes"/>
+
+    <item
+        android:id="@+id/curtains"
+        android:title="Cortinas"/>
+
+    <item
+        android:id="@+id/lights"
+        android:title="Iluminação"/>
+
+
+</menu>

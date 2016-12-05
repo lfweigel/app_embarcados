@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/chairs"
+        android:title="Cadeiras" />
+
+    <item
+        android:id="@+id/armchairs"
+        android:title="Poltronas"/>
+
+    <item
+        android:id="@+id/sofas"
+        android:title="Sofás"/>
+
+    <item
+        android:id="@+id/beds"
+        android:title="Camas"/>
+
+    <item
+        android:id="@+id/tables"
+        android:title="Mesas"/>
+
+    <item
+        android:id="@+id/shelves"
+        android:title="Estantes"/>
+
+    <item
+        android:id="@+id/cabinets"
+        android:title="Armários"/>
+
+</menu>
