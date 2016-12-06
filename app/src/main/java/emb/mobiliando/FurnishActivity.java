@@ -1,11 +1,14 @@
 package emb.mobiliando;
-
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -19,13 +22,19 @@ import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 
 public class FurnishActivity extends AppCompatActivity {
 
-    ImageView furnitureIcon, decorationIcon, furnishedImg, saveIcon;
-
+    Bitmap imgBitmap;
+    ImageView furnishedImg;
     float dX, dY;
 
     @Override
@@ -40,235 +49,103 @@ public class FurnishActivity extends AppCompatActivity {
         toolbar.inflateMenu(R.menu.toolbar);
 
 
-
-
-         furnishedImg = (ImageView) findViewById(R.id.imageView1);
-         final String photo_path;
-         if(intent.hasExtra("path")) { // "Novo projeto", intent vem com um extra indicando o path absoluto
+        furnishedImg = (ImageView) findViewById(R.id.imageView1);
+        final String photo_path;
+        if (intent.hasExtra("path")) { // "Novo projeto", intent vem com um extra indicando o path absoluto
             photo_path = intent.getStringExtra("path");
-            Bitmap imgBitmap = BitmapFactory.decodeFile(photo_path);
+            ((GlobalVariableHelper) this.getApplication()).setGlobalVariable(photo_path);
+
+            // Bitmap imgBitmap = BitmapFactory.decodeFile(photo_path);
+            imgBitmap = decodeSampledBitmapFromFile(photo_path, 600, 600);
+            ((GlobalVariableHelper) this.getApplication()).setAmbientBitmap(imgBitmap);
             furnishedImg.setImageBitmap(imgBitmap);
 
-             absolutePath = photo_path;
-         }
-         else if(intent.hasExtra("uri")) { // "Editar projeto", intent vem com uma Uri indicando a imagem selecionada da galeria
+            absolutePath = photo_path;
+        } else if (intent.hasExtra("uri")) { // "Editar projeto", intent vem com uma Uri indicando a imagem selecionada da galeria
             photo_path = intent.getStringExtra("uri");
             Uri photo_uri = Uri.parse(photo_path);
-            furnishedImg.setImageURI(photo_uri);
-        }
-         else if(intent.hasExtra("command")) // vem de alguma activity de móveis
-         {
-             /*int res = getResources().getIdentifier("living_room2", "drawable", this.getPackageName());
-             furnishedImg.setImageResource(res);*/
-             //String picturePath = "/storage/emulated/0/DCIM/Camera/"
-
-             final String path = intent.getStringExtra("command");
-             Uri photo_uri = Uri.parse(path);
-             furnishedImg.setImageURI(photo_uri);
-
-             absolutePath = path;
-
-             //Toast.makeText(getBaseContext(), "Absolute Path " + absolutePath , Toast.LENGTH_LONG).show();
-
-             String imageName = intent.getStringExtra("image_name");
-             int res2 = getResources().getIdentifier(imageName, "drawable", this.getPackageName());
-
-             ImageView iv = (ImageView) findViewById(R.id.iv);
-
-             iv.setImageResource(res2);
-
-             iv.setOnTouchListener(new View.OnTouchListener() {
-
-                 @Override
-                 public boolean onTouch(View view, MotionEvent event) {
-
-                     switch (event.getAction()) {
-
-                         case MotionEvent.ACTION_DOWN:
-
-                             dX = view.getX() - event.getRawX();
-                             dY = view.getY() - event.getRawY();
-                             break;
-
-                         case MotionEvent.ACTION_MOVE:
-
-                             view.animate()
-                                     .x(event.getRawX() + dX)
-                                     .y(event.getRawY() + dY)
-                                     .setDuration(0)
-                                     .start();
-                             break;
-                         default:
-                             return false;
-                     }
-                     return true;
-                 }
-
-             });
-         }
-         else
-             Toast.makeText(getBaseContext(), "Algo bem errado, nao deveria acontecer", Toast.LENGTH_LONG).show();
+            String abs_path = getPath(photo_uri);
+            ((GlobalVariableHelper) this.getApplication()).setGlobalVariable(abs_path);
+            imgBitmap = decodeSampledBitmapFromFile(abs_path, 600, 600);
+            ((GlobalVariableHelper) this.getApplication()).setAmbientBitmap(imgBitmap);
+            furnishedImg.setImageBitmap(imgBitmap);
 
 
-        //furnishedImg.setRotation(90.0f);
+        } else if (intent.hasExtra("command")) // vem de alguma activity de móveis
+        {
+            boolean has_previous_objects = ((GlobalVariableHelper) this.getApplication()).getHasPreviousObjects();
+            if (has_previous_objects == FALSE) {
 
-       // furnitureIcon = (ImageView) findViewById(R.id.imageView2);
-        //decorationIcon = (ImageView) findViewById(R.id.imageView3);
-       // saveIcon = (ImageView) findViewById(R.id.saveImage);
+                String global_path = ((GlobalVariableHelper) this.getApplication()).getGlobalVariable();
+                Bitmap imgBitmap = decodeSampledBitmapFromFile(global_path, 600, 600);
+                furnishedImg.setImageBitmap(imgBitmap);
+                ((GlobalVariableHelper) this.getApplication()).setHasPreviousObjects(TRUE);
 
-       /* saveIcon.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                //saveFurnishedImage();
-                createDirectoryAndSaveFile();
+            } else {
+                Bitmap last_bitmap = ((GlobalVariableHelper) this.getApplication()).getLastBitmap();;
+
+                furnishedImg.setImageBitmap(last_bitmap);
             }
-        });
-
-        furnitureIcon.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                selectFurniture();
-            }
-        });
-
-        decorationIcon.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                selectDecoration();
-            }
-        });
-*/
-    }
-/*
-    private Bitmap uriToBitmap(Uri selectedFileUri) {
-        Bitmap image = null;
-        try {
-            ParcelFileDescriptor parcelFileDescriptor =
-                    getContentResolver().openFileDescriptor(selectedFileUri, "r");
-            FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-            image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
 
 
-            parcelFileDescriptor.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
+            String imageName = intent.getStringExtra("image_name");
+            ((GlobalVariableHelper) this.getApplication()).setFurniturePath(imageName);
+            int res2 = getResources().getIdentifier(imageName, "drawable", this.getPackageName());
 
-    }*/
-    private void saveFurnishedImage() {
-/*
-        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        File f = new File(path);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
-        this.sendBroadcast(mediaScanIntent);
-        Toast.makeText(getBaseContext(), "Project saved!\nPath: "+ path, Toast.LENGTH_LONG).show();
-*/
-        /*
-        furnishedImg.buildDrawingCache();
-        Bitmap bitmap =furnishedImg.getDrawingCache();
-        OutputStream fOut = null;
-        Uri outputFileUri;
-        try {
-            File root = new File(Environment.getExternalStorageDirectory()
-                    + File.separator + "folder_name" + File.separator);
-            root.mkdirs();
-            File sdImageMainDirectory = new File(root, "myPicName.jpg");
-            outputFileUri = Uri.fromFile(sdImageMainDirectory);
-            fOut = new FileOutputStream(sdImageMainDirectory);
-        } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error occured. Please try again later.",
-                    Toast.LENGTH_SHORT).show();
-        }
-        try {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-            fOut.flush();
-            fOut.close();
-        } catch (Exception e) {
-        }
-        */
-        furnishedImg.buildDrawingCache();
-        Bitmap bitmap = furnishedImg.getDrawingCache();
-        String fullPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/directoryName";
-        Toast.makeText(getBaseContext(), "Trying to savd!\nPath: "+ fullPath, Toast.LENGTH_LONG).show();
-        try {
-            File dir = new File(fullPath);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            OutputStream fOut = null;
-            File file = new File(fullPath, "image.png");
-            if (file.exists())
-                file.delete();
-            file.createNewFile();
-            fOut = new FileOutputStream(file);
-            // 100 means no compression, the lower you go, the stronger the compression
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fOut);
-            fOut.flush();
-            fOut.close();
-            Toast.makeText(getBaseContext(), "Project saved!\nPath: "+ fullPath, Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            Log.e("saveToExternalStorage()", e.getMessage());
-        }
+            ImageView iv = (ImageView) findViewById(R.id.iv);
+
+            iv.setImageResource(res2);
+
+            iv.setOnTouchListener(new View.OnTouchListener() {
+
+                @Override
+                public boolean onTouch(View view, MotionEvent event) {
+
+                    switch (event.getAction()) {
+
+                        case MotionEvent.ACTION_DOWN:
+
+                            dX = view.getX() - event.getRawX();
+                            dY = view.getY() - event.getRawY();
+                            break;
+
+                        case MotionEvent.ACTION_MOVE:
+
+                            view.animate()
+                                    .x(event.getRawX() + dX)
+                                    .y(event.getRawY() + dY)
+                                    .setDuration(0)
+                                    .start();
+                            break;
+                        default:
+                            return false;
+                    }
+                    return true;
+                }
+
+            });
+        } else
+            Toast.makeText(getBaseContext(), "Algo bem errado, nao deveria acontecer", Toast.LENGTH_LONG).show();
+
+
     }
 
-        /*
-        furnishedImg.setDrawingCacheEnabled(true);
-        Bitmap b = furnishedImg.getDrawingCache();
-        MediaStore.Images.Media.insertImage(getActivity().getContentResolver(), b, "imgtest", description);
-        */
-
-    private void createDirectoryAndSaveFile() {
-        String fileName = "test";
-        furnishedImg.buildDrawingCache();
-        Bitmap bitmap = furnishedImg.getDrawingCache();
-
-        //String path =  Environment.getExternalStorageDirectory() + "/" + "mobiliando_projects/";
-        //String path =  Environment.getExternalStorageDirectory() + "/" + "mobiliando_projects/";
-        String path = ("/SDCARD/mobiliando_projects/");
-        File dir = new File(path);
-
-        if (!dir.exists()) {
-            //File wallpaperDirectory = new File("/sdcard/DirName/");
-            dir.mkdirs();
-            Toast.makeText(getBaseContext(), "Directory" + path + " created!", Toast.LENGTH_LONG).show();
-        }
-
-        String image_destination = path + "image_test";
-        File file = new File(image_destination);
-        if (file.exists()) {
-            file.delete();
-        }
-        Toast.makeText(getBaseContext(), "Project saved at " + image_destination + "!", Toast.LENGTH_LONG).show();
-       try {
-            FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-            Toast.makeText(getBaseContext(), "Project saved!", Toast.LENGTH_LONG).show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     String absolutePath;
 
-    public void selectFurniture(){
+    public void selectFurniture() {
 
         PopupMenu popup = new PopupMenu(FurnishActivity.this, findViewById(R.id.add_furniture));
         popup.getMenuInflater().inflate(R.menu.furniture_popup_menu, popup.getMenu());
 
-
-       // final String path;
-        //path = absolutePath;
+        ((GlobalVariableHelper) this.getApplication()).setLasBitmap(getBitmap(findViewById(R.id.ambient_frame)));
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                // Do something
-                //Toast.makeText(getBaseContext(), "Absolute Path Furniture " + absolutePath , Toast.LENGTH_LONG).show();
                 Intent objectIntent = new Intent(); // pra ele não reclamar
 
-                switch(item.getItemId()){
+                switch (item.getItemId()) {
                     case R.id.chairs:
                         objectIntent = new Intent(FurnishActivity.this, ChairsActivity.class);
                         objectIntent.putExtra("path", absolutePath);
@@ -280,7 +157,7 @@ public class FurnishActivity extends AppCompatActivity {
                         break;
 
                     case R.id.sofas:
-                       objectIntent = new Intent(FurnishActivity.this, SofasActivity.class);
+                        objectIntent = new Intent(FurnishActivity.this, SofasActivity.class);
                         objectIntent.putExtra("path", absolutePath);
                         break;
 
@@ -309,47 +186,49 @@ public class FurnishActivity extends AppCompatActivity {
             }
         });
 
-        popup.show();//showing popup menu
+        popup.show();
     }
 
 
-    public void selectDecoration(){
+    public void selectDecoration() {
 
         PopupMenu popup = new PopupMenu(FurnishActivity.this, findViewById(R.id.add_decoration));
         popup.getMenuInflater().inflate(R.menu.decoration_popup_menu, popup.getMenu());
+        
+        ((GlobalVariableHelper) this.getApplication()).setLasBitmap(getBitmap(findViewById(R.id.ambient_frame)));
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 Intent objectIntent = new Intent();
                 // Do something
-                    switch(item.getItemId()){
+                switch (item.getItemId()) {
 
-                        case R.id.portraits:
-                            objectIntent = new Intent(FurnishActivity.this, PortraitsActivity.class);
-                            objectIntent.putExtra("path", absolutePath);
-                            break;
+                    case R.id.portraits:
+                        objectIntent = new Intent(FurnishActivity.this, PortraitsActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
+                        break;
 
-                        case R.id.vases:
-                            objectIntent = new Intent(FurnishActivity.this, VasesActivity.class);
-                            objectIntent.putExtra("path", absolutePath);
-                            break;
+                    case R.id.vases:
+                        objectIntent = new Intent(FurnishActivity.this, VasesActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
+                        break;
 
-                        case R.id.mats:
-                            objectIntent = new Intent(FurnishActivity.this, MatsActivity.class);
-                            objectIntent.putExtra("path", absolutePath);
-                            break;
+                    case R.id.mats:
+                        objectIntent = new Intent(FurnishActivity.this, MatsActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
+                        break;
 
-                        case R.id.lights:
-                            objectIntent = new Intent(FurnishActivity.this, LightsActivity.class);
-                            objectIntent.putExtra("path", absolutePath);
-                            break;
-                    }
+                    case R.id.lights:
+                        objectIntent = new Intent(FurnishActivity.this, LightsActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
+                        break;
+                }
                 startActivity(objectIntent);
                 return true;
-                }
-            });
+            }
+        });
 
-        popup.show();//showing popup menu
+        popup.show();
 
     }
 
@@ -362,14 +241,11 @@ public class FurnishActivity extends AppCompatActivity {
 
             case R.id.add_decoration:
                 selectDecoration();
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
                 return true;
 
             case R.id.save_image:
-                //createDirectoryAndSaveFile()
-
-
+                saveFurnishedImage();
+                return true;
             default:
 
                 return super.onOptionsItemSelected(item);
@@ -379,10 +255,115 @@ public class FurnishActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.toolbar, menu);
         return true;
     }
 
-}
+    public String getPath(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+        }
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        String result = cursor.getString(idx);
+        cursor.close();
+        return result;
 
+    }
+
+    private void saveFurnishedImage() {
+
+        File imageFileFolder = new File(Environment.getExternalStorageDirectory(),
+                "FOLDER_PHOTOS");
+        imageFileFolder.mkdir();
+        FileOutputStream out1 = null;
+
+        File imageFileName = new File(imageFileFolder, "test.jpg");
+        try {
+            out1 = new FileOutputStream(imageFileName);
+        } catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        Bitmap final_image = getBitmap(findViewById(R.id.ambient_frame));
+        final_image.compress(Bitmap.CompressFormat.JPEG, 100, out1);
+        try {
+            out1.flush();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            out1.close();
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(getBaseContext(), "Projeto salvo em " + imageFileName.toString(), Toast.LENGTH_LONG).show();
+
+    }
+    private Bitmap getBitmap(View v) {
+        v.clearFocus();
+        v.setPressed(false);
+
+        boolean willNotCache = v.willNotCacheDrawing();
+        v.setWillNotCacheDrawing(false);
+
+        int color = v.getDrawingCacheBackgroundColor();
+        v.setDrawingCacheBackgroundColor(0);
+
+        if (color != 0) {
+            v.destroyDrawingCache();
+        }
+        v.buildDrawingCache();
+        Bitmap cacheBitmap = v.getDrawingCache();
+        if (cacheBitmap == null) {
+            Toast.makeText(getBaseContext(), "Erro em getBitmap()",
+                    Toast.LENGTH_SHORT).show();
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+
+        v.destroyDrawingCache();
+        v.setWillNotCacheDrawing(willNotCache);
+        v.setDrawingCacheBackgroundColor(color);
+
+        return bitmap;
+    }
+
+    public static Bitmap decodeSampledBitmapFromFile(String path,
+                                                     int reqWidth, int reqHeight) {
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(path, options);
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
+    }
+}

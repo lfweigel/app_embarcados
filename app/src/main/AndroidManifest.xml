@@ -6,6 +6,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".GlobalVariableHelper"
         android:icon="@mipmap/icon1"
         android:label="@string/app_name"
         android:supportsRtl="true"
