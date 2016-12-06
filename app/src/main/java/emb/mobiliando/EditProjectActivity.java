@@ -56,7 +56,4 @@ public class EditProjectActivity extends AppCompatActivity {
             startActivity(projectIntent);
         }
     }
-
-
-*/
 }
