@@ -51,7 +51,7 @@ public class FurnishActivity extends AppCompatActivity {
              Toast.makeText(getBaseContext(), "Algo bem errado, nao deveria acontecer", Toast.LENGTH_LONG).show();
 
 
-        furnishedImg.setRotation(90.0f);
+        //furnishedImg.setRotation(90.0f);
 
        // furnitureIcon = (ImageView) findViewById(R.id.imageView2);
         //decorationIcon = (ImageView) findViewById(R.id.imageView3);

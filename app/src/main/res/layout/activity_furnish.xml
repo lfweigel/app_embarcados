@@ -10,10 +10,10 @@
 
     <ImageView
         android:id="@+id/imageView1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:cropToPadding="false"
         android:adjustViewBounds="false"
-        android:layout_height="500dp"
+        android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
         android:layout_below="@+id/toolbar"
         android:layout_alignParentLeft="true"
