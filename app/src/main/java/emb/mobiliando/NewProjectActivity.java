@@ -22,7 +22,6 @@ public class NewProjectActivity extends AppCompatActivity {
     ImageView img;
     private Bitmap bitmap;
     static final int REQUEST_TAKE_PHOTO = 1;
-    public final static String EXTRA_MESSAGE = "emb.mobiliando.MESSAGE";
     String mCurrentPhotoPath;
 
     @Override
@@ -65,8 +64,6 @@ public class NewProjectActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        // Nao tava conseguindo chamar uma nova activity dentro de um activity result entao fiz essa noobisse
         furnishIt();
 
     }
@@ -75,17 +72,16 @@ public class NewProjectActivity extends AppCompatActivity {
 
         if(mCurrentPhotoPath != null)
         {
-            Intent newProjectIntent = new Intent(this, SelectFurnitureActivity.class);
-            newProjectIntent.putExtra(EXTRA_MESSAGE, mCurrentPhotoPath);
+            Intent newProjectIntent = new Intent(this, FurnishActivity.class);
+            newProjectIntent.putExtra("path", mCurrentPhotoPath);
             startActivity(newProjectIntent);
         }
         else
-            Toast.makeText(getBaseContext(),"Disponibilize uma foto para prosseguir!", Toast.LENGTH_LONG).show();
+            Toast.makeText(getBaseContext(),"Could not load picture!", Toast.LENGTH_LONG).show();
 
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
@@ -95,7 +91,6 @@ public class NewProjectActivity extends AppCompatActivity {
                 storageDir      /* directory */
         );
 
-        // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
