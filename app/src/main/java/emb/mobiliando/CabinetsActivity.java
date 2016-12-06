@@ -9,10 +9,14 @@ import android.widget.ImageView;
 public class CabinetsActivity extends AppCompatActivity {
 
     ImageView img1, img2, img3, img4, img5, img6;
+    String path;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cabinets);
+
+        Intent intent = getIntent();
+        path = intent.getStringExtra("path");
 
         img1 = (ImageView) findViewById(R.id.imageView1);
         img2 = (ImageView) findViewById(R.id.imageView2);
@@ -59,8 +63,9 @@ public class CabinetsActivity extends AppCompatActivity {
     }
 
     public void addCabinet(String selected_image) {
-        Intent intent = new Intent(this, AddFurnitureActivity.class);
+        Intent intent = new Intent(this, FurnishActivity.class);
         intent.putExtra("image_name", selected_image);
+        intent.putExtra("command", path);
         startActivity(intent);
     }
 }

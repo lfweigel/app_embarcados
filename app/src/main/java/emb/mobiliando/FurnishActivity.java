@@ -48,6 +48,8 @@ public class FurnishActivity extends AppCompatActivity {
             photo_path = intent.getStringExtra("path");
             Bitmap imgBitmap = BitmapFactory.decodeFile(photo_path);
             furnishedImg.setImageBitmap(imgBitmap);
+
+             absolutePath = photo_path;
          }
          else if(intent.hasExtra("uri")) { // "Editar projeto", intent vem com uma Uri indicando a imagem selecionada da galeria
             photo_path = intent.getStringExtra("uri");
@@ -56,10 +58,20 @@ public class FurnishActivity extends AppCompatActivity {
         }
          else if(intent.hasExtra("command")) // vem de alguma activity de móveis
          {
-             int res = getResources().getIdentifier("living_room2", "drawable", this.getPackageName());
-             furnishedImg.setImageResource(res);
+             /*int res = getResources().getIdentifier("living_room2", "drawable", this.getPackageName());
+             furnishedImg.setImageResource(res);*/
+             //String picturePath = "/storage/emulated/0/DCIM/Camera/"
 
-             int res2 = getResources().getIdentifier("armchair1", "drawable", this.getPackageName());
+             final String path = intent.getStringExtra("command");
+             Uri photo_uri = Uri.parse(path);
+             furnishedImg.setImageURI(photo_uri);
+
+             absolutePath = path;
+
+             Toast.makeText(getBaseContext(), "Absolute Path " + absolutePath , Toast.LENGTH_LONG).show();
+
+             String imageName = intent.getStringExtra("image_name");
+             int res2 = getResources().getIdentifier(imageName, "drawable", this.getPackageName());
 
              ImageView iv = (ImageView) findViewById(R.id.iv);
 
@@ -238,43 +250,58 @@ public class FurnishActivity extends AppCompatActivity {
         }
     }
 
+    String absolutePath;
+
     public void selectFurniture(){
 
         PopupMenu popup = new PopupMenu(FurnishActivity.this, findViewById(R.id.add_furniture));
         popup.getMenuInflater().inflate(R.menu.furniture_popup_menu, popup.getMenu());
 
+
+       // final String path;
+        //path = absolutePath;
+
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 // Do something
+                Toast.makeText(getBaseContext(), "Absolute Path Furniture " + absolutePath , Toast.LENGTH_LONG).show();
                 Intent objectIntent = new Intent(); // pra ele não reclamar
+
                 switch(item.getItemId()){
                     case R.id.chairs:
                         objectIntent = new Intent(FurnishActivity.this, ChairsActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
                         break;
 
                     case R.id.armchairs:
                         objectIntent = new Intent(FurnishActivity.this, ArmchairsActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
                         break;
 
                     case R.id.sofas:
                        objectIntent = new Intent(FurnishActivity.this, SofasActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
                         break;
 
                     case R.id.beds:
                         objectIntent = new Intent(FurnishActivity.this, BedsActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
                         break;
 
                     case R.id.tables:
                         objectIntent = new Intent(FurnishActivity.this, TablesActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
                         break;
 
                     case R.id.shelves:
                         objectIntent = new Intent(FurnishActivity.this, ShelvesActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
                         break;
 
                     case R.id.cabinets:
                         objectIntent = new Intent(FurnishActivity.this, CabinetsActivity.class);
+                        objectIntent.putExtra("path", absolutePath);
                         break;
                 }
                 startActivity(objectIntent);
