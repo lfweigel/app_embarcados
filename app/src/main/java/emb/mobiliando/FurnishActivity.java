@@ -68,7 +68,7 @@ public class FurnishActivity extends AppCompatActivity {
 
              absolutePath = path;
 
-             Toast.makeText(getBaseContext(), "Absolute Path " + absolutePath , Toast.LENGTH_LONG).show();
+             //Toast.makeText(getBaseContext(), "Absolute Path " + absolutePath , Toast.LENGTH_LONG).show();
 
              String imageName = intent.getStringExtra("image_name");
              int res2 = getResources().getIdentifier(imageName, "drawable", this.getPackageName());
@@ -265,7 +265,7 @@ public class FurnishActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 // Do something
-                Toast.makeText(getBaseContext(), "Absolute Path Furniture " + absolutePath , Toast.LENGTH_LONG).show();
+                //Toast.makeText(getBaseContext(), "Absolute Path Furniture " + absolutePath , Toast.LENGTH_LONG).show();
                 Intent objectIntent = new Intent(); // pra ele não reclamar
 
                 switch(item.getItemId()){
@@ -326,18 +326,22 @@ public class FurnishActivity extends AppCompatActivity {
 
                         case R.id.portraits:
                             objectIntent = new Intent(FurnishActivity.this, PortraitsActivity.class);
+                            objectIntent.putExtra("path", absolutePath);
                             break;
 
                         case R.id.vases:
                             objectIntent = new Intent(FurnishActivity.this, VasesActivity.class);
+                            objectIntent.putExtra("path", absolutePath);
                             break;
 
                         case R.id.mats:
                             objectIntent = new Intent(FurnishActivity.this, MatsActivity.class);
+                            objectIntent.putExtra("path", absolutePath);
                             break;
 
                         case R.id.lights:
                             objectIntent = new Intent(FurnishActivity.this, LightsActivity.class);
+                            objectIntent.putExtra("path", absolutePath);
                             break;
                     }
                 startActivity(objectIntent);

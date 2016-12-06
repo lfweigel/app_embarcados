@@ -64,7 +64,7 @@ public class BedsActivity extends AppCompatActivity {
     }
 
     public void addBed(String selected_image) {
-        Intent intent = new Intent(this, AddFurnitureActivity.class);
+        Intent intent = new Intent(this, FurnishActivity.class);
         intent.putExtra("image_name", selected_image);
         intent.putExtra("command", path);
         startActivity(intent);
