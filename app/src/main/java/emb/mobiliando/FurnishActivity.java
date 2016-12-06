@@ -336,10 +336,6 @@ public class FurnishActivity extends AppCompatActivity {
                             objectIntent = new Intent(FurnishActivity.this, MatsActivity.class);
                             break;
 
-                        case R.id.curtains:
-                            objectIntent = new Intent(FurnishActivity.this, CurtainsActivity.class);
-                            break;
-
                         case R.id.lights:
                             objectIntent = new Intent(FurnishActivity.this, LightsActivity.class);
                             break;

@@ -14,10 +14,6 @@
         android:title="Tapetes"/>
 
     <item
-        android:id="@+id/curtains"
-        android:title="Cortinas"/>
-
-    <item
         android:id="@+id/lights"
         android:title="Iluminação"/>
 

@@ -40,7 +40,6 @@
         <activity android:name=".PortraitsActivity" />
         <activity android:name=".VasesActivity" />
         <activity android:name=".MatsActivity" />
-        <activity android:name=".CurtainsActivity" />
         <activity android:name=".LightsActivity" />
         <activity android:name=".AddFurnitureActivity" />
         <activity android:name=".EditProjectActivity"/>
