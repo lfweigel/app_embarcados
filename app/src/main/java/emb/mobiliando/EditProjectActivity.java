@@ -22,7 +22,7 @@ public class EditProjectActivity extends AppCompatActivity {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+        startActivityForResult(Intent.createChooser(intent, "Selecione o Projeto"), PICK_IMAGE_REQUEST);
 
         //utra versão, mas prefiro a de cima
 /*
