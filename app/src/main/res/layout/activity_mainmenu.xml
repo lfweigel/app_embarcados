@@ -59,29 +59,31 @@
         android:layout_marginBottom="17dp" />
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:srcCompat="@android:drawable/ic_menu_edit"
         android:id="@+id/editButton"
         android:onClick="editProject"
         android:layout_marginTop="14dp"
         android:layout_below="@+id/cameraButton"
         android:layout_alignLeft="@+id/cameraButton"
-        android:layout_alignStart="@+id/cameraButton" />
+        android:layout_alignStart="@+id/cameraButton"
+        android:background="@null"/>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:srcCompat="@android:drawable/ic_menu_slideshow"
         android:id="@+id/slideshowButton"
         android:layout_marginTop="11dp"
         android:layout_below="@+id/editButton"
         android:layout_alignLeft="@+id/editButton"
-        android:layout_alignStart="@+id/editButton" />
+        android:layout_alignStart="@+id/editButton"
+        android:background="@null"/>
 
     <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:srcCompat="@android:drawable/ic_menu_camera"
         android:id="@+id/cameraButton"
         android:onClick="newProject"
@@ -90,6 +92,7 @@
         android:layout_marginEnd="10dp"
         android:layout_below="@+id/imageView5"
         android:layout_toLeftOf="@+id/textView6"
-        android:layout_toStartOf="@+id/textView6" />
+        android:layout_toStartOf="@+id/textView6"
+        android:background="@null"/>
 
 </RelativeLayout>
