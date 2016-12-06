@@ -24,7 +24,7 @@ public class PortraitsActivity extends AppCompatActivity {
 
         img1.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                addPortrait("cportrait1");
+                addPortrait("portrait1");
             }
         });
 
