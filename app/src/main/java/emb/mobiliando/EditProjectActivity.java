@@ -51,19 +51,12 @@ public class EditProjectActivity extends AppCompatActivity {
             Uri uri = data.getData();
 
             Intent projectIntent = new Intent(this, FurnishActivity.class);
-            ImageView img = (ImageView) findViewById(R.id.preview);
 
             projectIntent.putExtra("uri", uri.toString());
             startActivity(projectIntent);
         }
     }
 
-/*
-    public String getPath(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
-    }
+
 */
 }
