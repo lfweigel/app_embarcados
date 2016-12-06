@@ -1,9 +1,11 @@
 package emb.mobiliando;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -23,6 +25,7 @@ public class AddFurnitureActivity extends AppCompatActivity {
         int res = getResources().getIdentifier(image_to_load, "drawable", this.getPackageName());
         img = (ImageView)findViewById(R.id.selected_furniture);
         img.setImageResource(res);
+
 
         img.setOnTouchListener(new View.OnTouchListener(){
 
@@ -54,4 +57,5 @@ public class AddFurnitureActivity extends AppCompatActivity {
         });
 
     }
+
 }

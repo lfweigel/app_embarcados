@@ -3,6 +3,7 @@ package emb.mobiliando;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
@@ -11,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
@@ -23,6 +26,8 @@ public class FurnishActivity extends AppCompatActivity {
 
     ImageView furnitureIcon, decorationIcon, furnishedImg, saveIcon;
 
+    float dX, dY;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,6 +38,8 @@ public class FurnishActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         toolbar.inflateMenu(R.menu.toolbar);
+
+
 
 
          furnishedImg = (ImageView) findViewById(R.id.imageView1);
@@ -47,6 +54,46 @@ public class FurnishActivity extends AppCompatActivity {
             Uri photo_uri = Uri.parse(photo_path);
             furnishedImg.setImageURI(photo_uri);
         }
+         else if(intent.hasExtra("command")) // vem de alguma activity de móveis
+         {
+             int res = getResources().getIdentifier("living_room2", "drawable", this.getPackageName());
+             furnishedImg.setImageResource(res);
+
+             int res2 = getResources().getIdentifier("armchair1", "drawable", this.getPackageName());
+
+             ImageView iv = (ImageView) findViewById(R.id.iv);
+
+             iv.setImageResource(res2);
+
+             iv.setOnTouchListener(new View.OnTouchListener() {
+
+                 @Override
+                 public boolean onTouch(View view, MotionEvent event) {
+
+                     switch (event.getAction()) {
+
+                         case MotionEvent.ACTION_DOWN:
+
+                             dX = view.getX() - event.getRawX();
+                             dY = view.getY() - event.getRawY();
+                             break;
+
+                         case MotionEvent.ACTION_MOVE:
+
+                             view.animate()
+                                     .x(event.getRawX() + dX)
+                                     .y(event.getRawY() + dY)
+                                     .setDuration(0)
+                                     .start();
+                             break;
+                         default:
+                             return false;
+                     }
+                     return true;
+                 }
+
+             });
+         }
          else
              Toast.makeText(getBaseContext(), "Algo bem errado, nao deveria acontecer", Toast.LENGTH_LONG).show();
 

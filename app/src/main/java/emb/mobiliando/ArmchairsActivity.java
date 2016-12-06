@@ -60,8 +60,9 @@ public class ArmchairsActivity extends AppCompatActivity {
     }
 
     public void addArmchair(String selected_image) {
-        Intent intent = new Intent(this, AddFurnitureActivity.class);
+        Intent intent = new Intent(this, FurnishActivity.class);
         intent.putExtra("image_name", selected_image);
+        intent.putExtra("command", 1);
         startActivity(intent);
     }
 
