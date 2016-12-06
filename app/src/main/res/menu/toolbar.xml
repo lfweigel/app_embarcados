@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/add_decoration"
+        android:id="@+id/add_furniture"
         android:icon="@drawable/bed_logo"
         android:title="@string/action_furniture"
         app:showAsAction="ifRoom"/>
 
     <item
-        android:id="@+id/add_furniture"
+        android:id="@+id/add_decoration"
         android:icon="@drawable/portrait_logo"
         android:title="@string/action_decoration"
         app:showAsAction="ifRoom"/>
