@@ -26,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -194,7 +196,7 @@ public class FurnishActivity extends AppCompatActivity {
 
         PopupMenu popup = new PopupMenu(FurnishActivity.this, findViewById(R.id.add_decoration));
         popup.getMenuInflater().inflate(R.menu.decoration_popup_menu, popup.getMenu());
-        
+
         ((GlobalVariableHelper) this.getApplication()).setLasBitmap(getBitmap(findViewById(R.id.ambient_frame)));
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -272,13 +274,13 @@ public class FurnishActivity extends AppCompatActivity {
     }
 
     private void saveFurnishedImage() {
-
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File imageFileFolder = new File(Environment.getExternalStorageDirectory(),
                 "FOLDER_PHOTOS");
         imageFileFolder.mkdir();
         FileOutputStream out1 = null;
 
-        File imageFileName = new File(imageFileFolder, "test.jpg");
+        File imageFileName = new File(imageFileFolder, timeStamp +".jpg");
         try {
             out1 = new FileOutputStream(imageFileName);
         } catch (FileNotFoundException e){
