@@ -274,13 +274,13 @@ public class FurnishActivity extends AppCompatActivity {
     }
 
     private void saveFurnishedImage() {
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("dd_MM_HH_mm").format(new Date());
         File imageFileFolder = new File(Environment.getExternalStorageDirectory(),
                 "FOLDER_PHOTOS");
         imageFileFolder.mkdir();
         FileOutputStream out1 = null;
 
-        File imageFileName = new File(imageFileFolder, timeStamp +".jpg");
+        File imageFileName = new File(imageFileFolder,"projeto_"+timeStamp +".jpg");
         try {
             out1 = new FileOutputStream(imageFileName);
         } catch (FileNotFoundException e){
